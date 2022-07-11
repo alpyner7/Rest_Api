@@ -49,6 +49,7 @@ class PostLike(models.Model):
         null=True, blank=True,
     )
 
+
 class CommentLike(models.Model):
     comment = models.ForeignKey(
         Comment, 
