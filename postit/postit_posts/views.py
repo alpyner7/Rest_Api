@@ -32,3 +32,16 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             return self.destroy(request, *args, **kwargs)
         else:
             raise ValidationError(_("You cannot delete posts which are not yours!"))
+
+
+class CommentList(generics.ListCreateAPIView):
+    # queryset = models.Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        post = models.Post.objects.get(pk=self.kwargs['pk'])
+        return models.Comment.objects.filter(post=post)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
