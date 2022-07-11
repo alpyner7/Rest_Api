@@ -19,6 +19,13 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def put(self, request, *args, **kwargs):
+        post = models.Post.objects.filter(pk=kwargs['pk'], user=request.user)
+        if post.exists():
+            return self.update(request, *args, **kwargs)
+        else:
+            raise ValidationError(_("You cannot edit posts which are not yours!"))
+
     def delete(self, request, *args, **kwargs):
         post = models.Post.objects.filter(pk=kwargs['pk'], user=request.user)
         if post.exists():
