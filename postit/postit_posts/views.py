@@ -20,7 +20,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def delete(self, request, *args, **kwargs):
-        post = post.objects.filter(pk=kwargs['pk'], user=request.user)
+        post = models.Post.objects.filter(pk=kwargs['pk'], user=request.user)
         if post.exists():
             return self.destroy(request, *args, **kwargs)
         else:
