@@ -46,3 +46,23 @@ class CommentList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         post = models.Post.objects.get(pk=self.kwargs['pk'])
         serializer.save(user=self.request.user, post=post)
+
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def put(self, request, *args, **kwargs):
+        comment = models.Comment.objects.filter(pk=kwargs['pk'], user=request.user)
+        if comment.exists():
+            return self.update(request, *args, **kwargs)
+        else:
+            raise ValidationError(_("You cannot edit comments which are not yours!"))
+
+    def delete(self, request, *args, **kwargs):
+        comment = models.Comment.objects.filter(pk=kwargs['pk'], user=request.user)
+        if comment.exists():
+            return self.destroy(request, *args, **kwargs)
+        else:
+            raise ValidationError(_("You cannot delete comments which are not yours!"))
