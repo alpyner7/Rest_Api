@@ -24,4 +24,4 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         if post.exists():
             return self.destroy(request, *args, **kwargs)
         else:
-            return ValidationError(_("You cannot delete posts which are not yours!"))
+            raise ValidationError(_("You cannot delete posts which are not yours!"))
