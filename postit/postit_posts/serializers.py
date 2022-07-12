@@ -29,3 +29,8 @@ class PostSerializer(serializers.ModelSerializer):
             'user', 'user_id', 
             'created_at', 'updated_at', 
         )
+
+class PostLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.PostLike
+        fields = ['id', 'created_at']
