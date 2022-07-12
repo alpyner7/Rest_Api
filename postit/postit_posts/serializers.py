@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from . import models
 
@@ -37,3 +38,18 @@ class PostLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.PostLike
         fields = ['id', 'created_at']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'password', )
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        User = get_user_model()
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
